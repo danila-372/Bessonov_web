@@ -1,0 +1,37 @@
+<section class="review-form mb-5">
+    {% if current_user.is_authenticated %}
+        {% if current_user_review %}
+            <h3 class="mb-3">Ваш отзыв</h3>
+            {% set review = current_user_review %}
+            {% include 'courses/_review_card.html' %}
+        {% else %}
+            <h3 class="mb-3">Оставить отзыв</h3>
+            <form method="post" action="{{ url_for('courses.create_review', course_id=course.id) }}" class="border rounded p-3">
+                <input type="hidden" name="next" value="{{ request.full_path }}">
+
+                <div class="mb-3">
+                    <label for="review-rating" class="form-label">Оценка</label>
+                    <select class="form-select" id="review-rating" name="rating" required>
+                        <option value="5" selected>отлично</option>
+                        <option value="4">хорошо</option>
+                        <option value="3">удовлетворительно</option>
+                        <option value="2">неудовлетворительно</option>
+                        <option value="1">плохо</option>
+                        <option value="0">ужасно</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="review-text" class="form-label">Текст отзыва</label>
+                    <textarea class="form-control" id="review-text" name="text" rows="5" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-dark">Сохранить отзыв</button>
+            </form>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-light border">
+            <a href="{{ url_for('auth.login', next=request.full_path) }}">Войдите</a>, чтобы оставить отзыв.
+        </div>
+    {% endif %}
+</section>

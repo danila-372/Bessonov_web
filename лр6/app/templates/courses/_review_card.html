@@ -1,0 +1,10 @@
+<article class="border rounded p-3 mb-3">
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+        <strong>{{ review.user.full_name }}</strong>
+        <span class="text-muted small">
+            {{ review.created_at.strftime('%d.%m.%Y %H:%M') if review.created_at else '' }}
+        </span>
+        <span class="badge bg-dark ms-auto">{{ review.rating }}/5</span>
+    </div>
+    <p class="mb-0" style="white-space: pre-line;">{{ review.text }}</p>
+</article>
