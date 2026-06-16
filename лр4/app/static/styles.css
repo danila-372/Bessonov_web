@@ -1,0 +1,277 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f5f7fb;
+    color: #172033;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.5;
+}
+
+a {
+    color: #2457c5;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.navbar {
+    background: #172033;
+    color: #fff;
+}
+
+.navbar__inner {
+    align-items: center;
+    display: flex;
+    gap: 18px;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 1100px;
+    padding: 14px 20px;
+}
+
+.navbar__brand,
+.navbar a {
+    color: #fff;
+}
+
+.navbar__brand {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.navbar__links {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 1100px;
+    padding: 28px 20px 48px;
+}
+
+.page-header {
+    align-items: center;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.page-header h1 {
+    font-size: 28px;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    background: #fff;
+    border-collapse: collapse;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(23, 32, 51, 0.08);
+    overflow: hidden;
+    width: 100%;
+}
+
+th,
+td {
+    border-bottom: 1px solid #e5e9f2;
+    padding: 12px 14px;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    background: #eef2f8;
+    color: #38445c;
+    font-weight: 700;
+}
+
+tr:last-child td {
+    border-bottom: 0;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.button,
+button {
+    align-items: center;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    font-weight: 700;
+    justify-content: center;
+    min-height: 38px;
+    padding: 8px 14px;
+}
+
+.button:hover,
+button:hover {
+    text-decoration: none;
+}
+
+.button-primary {
+    background: #2457c5;
+    color: #fff;
+}
+
+.button-secondary {
+    background: #e6ebf5;
+    color: #172033;
+}
+
+.button-danger {
+    background: #c92a2a;
+    color: #fff;
+}
+
+.button-link {
+    background: transparent;
+    color: #2457c5;
+    font-weight: 700;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.flash-list {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.flash {
+    border-radius: 8px;
+    padding: 12px 14px;
+}
+
+.flash-success {
+    background: #dcfce7;
+    color: #14532d;
+}
+
+.flash-danger {
+    background: #fee2e2;
+    color: #7f1d1d;
+}
+
+.form {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(23, 32, 51, 0.08);
+    display: grid;
+    gap: 16px;
+    max-width: 680px;
+    padding: 22px;
+}
+
+.form-row {
+    display: grid;
+    gap: 6px;
+}
+
+label {
+    color: #38445c;
+    font-weight: 700;
+}
+
+input,
+select {
+    border: 1px solid #c8d1e2;
+    border-radius: 6px;
+    font: inherit;
+    min-height: 40px;
+    padding: 8px 10px;
+    width: 100%;
+}
+
+input.is-invalid,
+select.is-invalid {
+    border-color: #c92a2a;
+    box-shadow: 0 0 0 3px rgba(201, 42, 42, 0.12);
+}
+
+.invalid-feedback {
+    color: #a61e1e;
+    font-size: 14px;
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.muted {
+    color: #68748a;
+}
+
+dialog {
+    border: 0;
+    border-radius: 8px;
+    box-shadow: 0 24px 80px rgba(23, 32, 51, 0.28);
+    max-width: 460px;
+    padding: 0;
+    width: calc(100% - 32px);
+}
+
+dialog::backdrop {
+    background: rgba(23, 32, 51, 0.45);
+}
+
+.modal {
+    display: grid;
+    gap: 18px;
+    padding: 22px;
+}
+
+.modal h2 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.modal p {
+    margin: 0;
+}
+
+.modal__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+@media (max-width: 680px) {
+    .navbar__inner,
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .actions,
+    .form-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .button,
+    button {
+        width: 100%;
+    }
+}

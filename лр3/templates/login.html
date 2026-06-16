@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+    <h1>Вход</h1>
+    <form class="form" method="post" action="{{ url_for('login', next=next_url) if next_url else url_for('login') }}">
+        {% if next_url %}
+            <input type="hidden" name="next" value="{{ next_url }}">
+        {% endif %}
+
+        <div class="field">
+            <label for="username">Логин</label>
+            <input id="username" name="username" type="text" value="{{ username }}" required>
+        </div>
+
+        <div class="field">
+            <label for="password">Пароль</label>
+            <input id="password" name="password" type="password" required>
+        </div>
+
+        <label class="checkbox" for="remember">
+            <input id="remember" name="remember" type="checkbox">
+            Запомнить меня
+        </label>
+
+        <button class="button" type="submit">Войти</button>
+    </form>
+{% endblock %}

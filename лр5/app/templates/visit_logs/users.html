@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Отчет по пользователям{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Отчет по пользователям</h1>
+        <a class="button button-secondary" href="{{ url_for('visit_logs.index') }}">К журналу</a>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Пользователь</th>
+                    <th>Количество посещений</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ user_name(row) }}</td>
+                        <td>{{ row["visits_count"] }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">Записей нет</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <p>
+        <a class="button button-primary" href="{{ url_for('visit_logs.export_users_report') }}">Экспорт в CVS</a>
+    </p>
+{% endblock %}

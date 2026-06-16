@@ -1,0 +1,67 @@
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    font-size: 1.25rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.site-footer {
+    background-color: #f8f9fa;
+    font-size: 1rem;
+}
+
+.avatar {
+    max-width: 100%;
+}
+
+.post-page {
+    max-width: 900px;
+}
+
+.post-meta {
+    font-size: 1rem;
+}
+
+.post-image {
+    max-height: 500px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.post-text {
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.comment-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.comment-body {
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.comment-replies {
+    border-left: 2px solid #e9ecef;
+    padding-left: 1rem;
+}

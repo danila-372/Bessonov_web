@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Flask-приложение{% endblock %}</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: Arial, Helvetica, sans-serif;
+            --bg: #f5f7fb;
+            --surface: #ffffff;
+            --text: #1f2937;
+            --muted: #586174;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --border: #d8dee9;
+            --success: #137333;
+            --danger: #b3261e;
+            --warning: #8a5a00;
+            --info: #315b7d;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .navbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            padding: 16px clamp(16px, 4vw, 48px);
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            margin-right: 12px;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-link {
+            color: var(--muted);
+            text-decoration: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover,
+        .nav-link:focus {
+            color: var(--accent-dark);
+            background: #e8f0fe;
+        }
+
+        .page {
+            width: min(900px, calc(100% - 32px));
+            margin: 42px auto;
+            padding: 30px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 18px;
+            font-size: 32px;
+            line-height: 1.2;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        .flash-list {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .flash {
+            padding: 12px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+        }
+
+        .flash-success {
+            color: var(--success);
+            border-color: #b7dfc4;
+            background: #effaf2;
+        }
+
+        .flash-danger {
+            color: var(--danger);
+            border-color: #f1b5b0;
+            background: #fff1f0;
+        }
+
+        .flash-warning {
+            color: var(--warning);
+            border-color: #efd58b;
+            background: #fff8df;
+        }
+
+        .flash-info {
+            color: var(--info);
+            border-color: #b7cde0;
+            background: #eef6fc;
+        }
+
+        .form {
+            display: grid;
+            gap: 16px;
+            max-width: 420px;
+        }
+
+        .field {
+            display: grid;
+            gap: 7px;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            min-height: 42px;
+            padding: 9px 11px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font: inherit;
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .button {
+            width: fit-content;
+            min-height: 42px;
+            padding: 9px 16px;
+            border: 0;
+            border-radius: 6px;
+            color: #ffffff;
+            background: var(--accent);
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .button:hover,
+        .button:focus {
+            background: var(--accent-dark);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" aria-label="Основная навигация">
+        <a class="brand" href="{{ url_for('index') }}">ЛР 3</a>
+        <a class="nav-link" href="{{ url_for('index') }}">Главная</a>
+        <a class="nav-link" href="{{ url_for('visits') }}">Счётчик посещений</a>
+        {% if current_user.is_authenticated %}
+            <a class="nav-link" href="{{ url_for('secret') }}">Секретная страница</a>
+            <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
+        {% else %}
+            <a class="nav-link" href="{{ url_for('login') }}">Войти</a>
+        {% endif %}
+    </nav>
+
+    <main class="page">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-list" role="status">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

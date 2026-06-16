@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Журнал посещений{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Журнал посещений</h1>
+        <div class="actions">
+            {% if can("view_page_report") %}
+                <a class="button button-secondary" href="{{ url_for('visit_logs.pages_report') }}">Отчет по страницам</a>
+            {% endif %}
+            {% if can("view_user_report") %}
+                <a class="button button-secondary" href="{{ url_for('visit_logs.users_report') }}">Отчет по пользователям</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Пользователь</th>
+                    <th>Страница</th>
+                    <th>Дата</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ offset + loop.index }}</td>
+                        <td>{{ user_name(row) }}</td>
+                        <td>{{ row["path"] }}</td>
+                        <td>{{ row["created_at"]|format_visit_datetime }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">Записей нет</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <nav class="pagination" aria-label="Пагинация журнала посещений">
+        {% if page > 1 %}
+            <a class="button button-secondary" href="{{ url_for('visit_logs.index', page=page - 1) }}">Назад</a>
+        {% endif %}
+        <span>Страница {{ page }} из {{ total_pages }}</span>
+        {% if page < total_pages %}
+            <a class="button button-secondary" href="{{ url_for('visit_logs.index', page=page + 1) }}">Вперед</a>
+        {% endif %}
+    </nav>
+{% endblock %}

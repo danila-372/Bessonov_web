@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+  <h1 class="h3 mb-3">Flask: данные запроса и форма телефона</h1>
+
+  <div class="list-group">
+    <a class="list-group-item list-group-item-action" href="{{ url_for('url_params', first='one', second='two') }}">
+      Параметры URL
+    </a>
+    <a class="list-group-item list-group-item-action" href="{{ url_for('headers') }}">
+      Заголовки запроса
+    </a>
+    <a class="list-group-item list-group-item-action" href="{{ url_for('cookies') }}">
+      Cookie
+    </a>
+    <a class="list-group-item list-group-item-action" href="{{ url_for('form_params') }}">
+      Параметры формы
+    </a>
+    <a class="list-group-item list-group-item-action" href="{{ url_for('phone') }}">
+      Проверка номера телефона
+    </a>
+  </div>
+{% endblock %}

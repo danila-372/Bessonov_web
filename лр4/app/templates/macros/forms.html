@@ -1,0 +1,88 @@
+{% macro field_errors(errors, name) -%}
+    {% if errors.get(name) %}
+        {% for error in errors[name] %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    {% endif %}
+{%- endmacro %}
+
+{% macro user_form(action, roles, form_data, errors, include_credentials=false) -%}
+    <form class="form" method="post" action="{{ action }}" novalidate>
+        {% if include_credentials %}
+            <div class="form-row">
+                <label for="login">Логин</label>
+                <input
+                    id="login"
+                    name="login"
+                    value="{{ form_data.get('login', '') }}"
+                    class="{{ 'is-invalid' if errors.get('login') }}"
+                    autocomplete="username"
+                >
+                {{ field_errors(errors, 'login') }}
+            </div>
+
+            <div class="form-row">
+                <label for="password">Пароль</label>
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    class="{{ 'is-invalid' if errors.get('password') }}"
+                    autocomplete="new-password"
+                >
+                {{ field_errors(errors, 'password') }}
+            </div>
+        {% endif %}
+
+        <div class="form-row">
+            <label for="last_name">Фамилия</label>
+            <input
+                id="last_name"
+                name="last_name"
+                value="{{ form_data.get('last_name', '') }}"
+                class="{{ 'is-invalid' if errors.get('last_name') }}"
+            >
+            {{ field_errors(errors, 'last_name') }}
+        </div>
+
+        <div class="form-row">
+            <label for="first_name">Имя</label>
+            <input
+                id="first_name"
+                name="first_name"
+                value="{{ form_data.get('first_name', '') }}"
+                class="{{ 'is-invalid' if errors.get('first_name') }}"
+            >
+            {{ field_errors(errors, 'first_name') }}
+        </div>
+
+        <div class="form-row">
+            <label for="middle_name">Отчество</label>
+            <input
+                id="middle_name"
+                name="middle_name"
+                value="{{ form_data.get('middle_name', '') }}"
+            >
+        </div>
+
+        <div class="form-row">
+            <label for="role_id">Роль</label>
+            <select id="role_id" name="role_id">
+                <option value="">Без роли</option>
+                {% for role in roles %}
+                    <option
+                        value="{{ role['id'] }}"
+                        {{ 'selected' if form_data.get('role_id', '')|string == role['id']|string }}
+                    >
+                        {{ role["name"] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button class="button-primary" type="submit">Сохранить</button>
+            <a class="button button-secondary" href="{{ url_for('users.index') }}">Отмена</a>
+        </div>
+    </form>
+{%- endmacro %}

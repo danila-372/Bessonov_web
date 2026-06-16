@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% from "macros/forms.html" import user_form %}
+
+{% block title %}Создание пользователя{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Создание пользователя</h1>
+    </div>
+
+    {{ user_form(url_for('users.create_user'), roles, form_data, errors, include_credentials=true) }}
+{% endblock %}

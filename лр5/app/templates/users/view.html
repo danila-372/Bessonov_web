@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Просмотр пользователя{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Просмотр пользователя</h1>
+        <a class="button button-secondary" href="{{ url_for('users.index') }}">К списку</a>
+    </div>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Идентификатор</th>
+                <td>{{ user["id"] }}</td>
+            </tr>
+            <tr>
+                <th>Логин</th>
+                <td>{{ user["login"] }}</td>
+            </tr>
+            <tr>
+                <th>Фамилия</th>
+                <td>{{ user["last_name"] or "" }}</td>
+            </tr>
+            <tr>
+                <th>Имя</th>
+                <td>{{ user["first_name"] }}</td>
+            </tr>
+            <tr>
+                <th>Отчество</th>
+                <td>{{ user["middle_name"] or "" }}</td>
+            </tr>
+            <tr>
+                <th>Название роли</th>
+                <td>{{ user["role_name"] or "Без роли" }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

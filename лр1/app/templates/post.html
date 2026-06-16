@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% macro render_comment(comment, level=0) %}
+    <div class="comment d-flex {% if level > 0 %}mt-3{% else %}mb-4{% endif %}" data-comment-level="{{ level }}">
+        <div class="comment-avatar flex-shrink-0" aria-hidden="true">
+            {{ comment.author[0] }}
+        </div>
+        <div class="comment-body ms-3 flex-grow-1">
+            <div class="fw-bold">{{ comment.author }}</div>
+            <div>{{ comment.text }}</div>
+
+            {% if comment.replies %}
+                <div class="comment-replies mt-3">
+                    {% for reply in comment.replies %}
+                        {{ render_comment(reply, level + 1) }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% block content %}
+    <article class="post-page mx-auto">
+        <h1 class="mt-5 mb-3">{{ post.title }}</h1>
+
+        <p class="post-meta mb-3">
+            {{ post.author }}, {{ post.date.strftime('%d.%m.%Y') }}
+        </p>
+
+        <img
+            class="post-image img-fluid rounded mx-auto d-block mb-5"
+            src="{{ url_for('static', filename='images/' + post.image_id) }}"
+            alt="{{ post.title }}"
+        >
+
+        <div class="post-text mb-4">
+            {{ post.text }}
+        </div>
+
+        <section class="card mb-4">
+            <div class="card-header">Оставьте комментарий</div>
+            <div class="card-body">
+                <form method="post">
+                    <textarea class="form-control" id="comment-text" name="comment" rows="4"></textarea>
+                    <button class="btn btn-primary mt-3" type="submit">Отправить</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="comments mb-5" aria-label="Комментарии">
+            {% for comment in post.comments %}
+                {{ render_comment(comment) }}
+            {% else %}
+                <p class="text-muted">Комментариев пока нет.</p>
+            {% endfor %}
+        </section>
+    </article>
+{% endblock %}

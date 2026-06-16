@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Список пользователей{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Список пользователей</h1>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>ФИО</th>
+                    <th>Роль</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ user|full_name }}</td>
+                        <td>{{ user["role_name"] or "Без роли" }}</td>
+                        <td>
+                            <div class="actions">
+                                {% if can("view_user", user) %}
+                                    <a class="button button-secondary" href="{{ url_for('users.view_user', user_id=user['id']) }}">Просмотр</a>
+                                {% endif %}
+                                {% if can("edit_user", user) %}
+                                    <a class="button button-primary" href="{{ url_for('users.edit_user', user_id=user['id']) }}">Редактирование</a>
+                                {% endif %}
+                                {% if can("delete_user", user) %}
+                                    <button
+                                        class="button-danger"
+                                        type="button"
+                                        data-delete-button
+                                        data-delete-url="{{ url_for('users.delete_user', user_id=user['id']) }}"
+                                        data-user-name="{{ user|full_name }}"
+                                    >
+                                        Удаление
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if can("create_user") %}
+        <p>
+            <a class="button button-primary" href="{{ url_for('users.create_user') }}">Создание пользователя</a>
+        </p>
+    {% endif %}
+
+    {% if can("delete_user") %}
+        <dialog id="delete-dialog">
+            <div class="modal">
+                <h2>Удаление пользователя</h2>
+                <p>Вы уверены, что хотите удалить пользователя <strong data-delete-user-name></strong>?</p>
+                <div class="modal__actions">
+                    <form method="post">
+                        <button class="button-danger" type="submit">Да</button>
+                    </form>
+                    <button class="button-secondary" type="button" data-close-dialog>Нет</button>
+                </div>
+            </div>
+        </dialog>
+    {% endif %}
+{% endblock %}

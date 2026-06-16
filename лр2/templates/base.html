@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Flask lab 2{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    >
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}">ЛР 2</a>
+        <div class="navbar-nav">
+          <a class="nav-link" href="{{ url_for('url_params') }}">Параметры URL</a>
+          <a class="nav-link" href="{{ url_for('headers') }}">Заголовки</a>
+          <a class="nav-link" href="{{ url_for('cookies') }}">Cookie</a>
+          <a class="nav-link" href="{{ url_for('form_params') }}">Параметры формы</a>
+          <a class="nav-link" href="{{ url_for('phone') }}">Телефон</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container py-4">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

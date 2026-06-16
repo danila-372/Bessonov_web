@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% from "macros/forms.html" import user_form %}
+
+{% block title %}Редактирование пользователя{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Редактирование пользователя</h1>
+    </div>
+
+    {{ user_form(url_for('users.edit_user', user_id=user['id']), roles, form_data, errors, include_credentials=false, role_disabled=role_disabled) }}
+{% endblock %}

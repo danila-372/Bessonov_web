@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Cookie{% endblock %}
+
+{% block content %}
+  <h1 class="h3 mb-3">Cookie</h1>
+
+  {% if action == "set" %}
+    <div class="alert alert-success">
+      Cookie {{ cookie_name }} не была установлена. Новое значение: {{ cookie_value }}.
+    </div>
+  {% else %}
+    <div class="alert alert-warning">
+      Cookie {{ cookie_name }} была установлена со значением {{ cookie_value }} и теперь удалена.
+    </div>
+  {% endif %}
+{% endblock %}
