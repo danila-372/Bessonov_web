@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Электронная библиотека{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container navbar">
+        <a class="brand" href="{{ url_for('index') }}">Электронная библиотека</a>
+        <nav class="nav-links" aria-label="Основная навигация">
+          <a href="{{ url_for('index') }}">Книги</a>
+          {% if current_user and current_user.role.name == ROLE_USER %}
+            <a href="{{ url_for('collections') }}">Мои подборки</a>
+          {% endif %}
+          {% if current_user %}
+            <span class="user-name">{{ current_user.full_name }}</span>
+            <form action="{{ url_for('logout') }}" method="post" class="inline-form">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="next" value="{{ request.full_path.rstrip('?') }}">
+              <button class="button button-ghost" type="submit">Выйти</button>
+            </form>
+          {% else %}
+            <a class="button button-primary" href="{{ url_for('login') }}">Войти</a>
+          {% endif %}
+        </nav>
+      </div>
+    </header>
+
+    <main class="container main-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <section class="flash-stack" aria-label="Сообщения">
+            {% for category, message in messages %}
+              <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          </section>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        АИС «Электронная библиотека» · {{ config.AUTHOR_SIGNATURE }}
+      </div>
+    </footer>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

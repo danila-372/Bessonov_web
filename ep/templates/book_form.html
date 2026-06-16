@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% from "_book_form.html" import render_book_form with context %}
+
+{% block title %}{{ "Добавление" if mode == "create" else "Редактирование" }} книги · Электронная библиотека{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+{% endblock %}
+
+{% block content %}
+  <section class="page-heading">
+    <p class="eyebrow">Каталог</p>
+    <h1>{{ "Добавление книги" if mode == "create" else "Редактирование книги" }}</h1>
+  </section>
+  {{ render_book_form(book, genres, selected_genre_ids, mode) }}
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+  <script>
+    if (window.EasyMDE) {
+      new EasyMDE({ element: document.querySelector(".markdown-editor"), spellChecker: false });
+    }
+  </script>
+{% endblock %}

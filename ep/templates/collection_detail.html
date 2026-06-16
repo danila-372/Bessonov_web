@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ collection.title }} · Электронная библиотека{% endblock %}
+
+{% block content %}
+  <section class="page-heading split-heading">
+    <div>
+      <p class="eyebrow">Подборка</p>
+      <h1>{{ collection.title }}</h1>
+      <p class="subtle">Книг в подборке: {{ collection.books|length }}</p>
+    </div>
+    <a class="button button-ghost" href="{{ url_for('collections') }}">Назад к подборкам</a>
+  </section>
+
+  {% if collection.books %}
+    <section class="book-grid" aria-label="Книги подборки">
+      {% for book in collection.books %}
+        <article class="book-card">
+          <a class="cover-link" href="{{ url_for('book_detail', book_id=book.id) }}">
+            {% if book.cover %}
+              <img class="book-cover" src="{{ url_for('uploaded_file', filename=book.cover.filename) }}" alt="Обложка книги «{{ book.title }}»">
+            {% endif %}
+          </a>
+          <div class="book-card-body">
+            <p class="book-year">{{ book.year }}</p>
+            <h2><a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a></h2>
+            <p class="subtle">{{ book.author }}</p>
+            <p class="genre-list">
+              {% for genre in book.genres %}
+                <span class="tag">{{ genre.name }}</span>
+              {% endfor %}
+            </p>
+            <div class="book-stats">
+              <span>Оценка: {{ "%.1f"|format(book.average_rating) if book.average_rating is not none else "нет" }}</span>
+              <span>Рецензий: {{ book.reviews|length }}</span>
+            </div>
+          </div>
+          <div class="card-actions">
+            <a class="button button-small button-ghost" href="{{ url_for('book_detail', book_id=book.id) }}">Просмотр</a>
+          </div>
+        </article>
+      {% endfor %}
+    </section>
+  {% else %}
+    <section class="empty-state">
+      <h2>В подборке пока нет книг</h2>
+      <p>Откройте страницу книги и добавьте её в эту подборку.</p>
+    </section>
+  {% endif %}
+{% endblock %}

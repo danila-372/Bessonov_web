@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Мои подборки · Электронная библиотека{% endblock %}
+
+{% block content %}
+  <section class="page-heading split-heading">
+    <div>
+      <p class="eyebrow">Подборки</p>
+      <h1>Мои подборки</h1>
+      <p class="subtle">Создавайте собственные списки книг и быстро возвращайтесь к ним.</p>
+    </div>
+  </section>
+
+  {% if collections %}
+    <div class="table-panel">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Название</th>
+            <th>Количество книг</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for collection in collections %}
+            <tr>
+              <td>{{ collection.title }}</td>
+              <td>{{ collection.books|length }}</td>
+              <td>
+                <a class="button button-small button-ghost" href="{{ url_for('collection_detail', collection_id=collection.id) }}">Просмотр</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <section class="empty-state">
+      <h2>Подборок пока нет</h2>
+      <p>Добавьте первую подборку и сохраните в неё книги.</p>
+    </section>
+  {% endif %}
+
+  <div class="page-actions">
+    <button class="button button-primary" type="button" data-open-collection-dialog>Добавить подборку</button>
+  </div>
+
+  <dialog class="delete-dialog" id="collection-dialog">
+    <h2>Новая подборка</h2>
+    <form action="{{ url_for('create_collection') }}" method="post" class="stacked-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>
+        Название подборки
+        <input name="title" type="text" required>
+      </label>
+      <div class="dialog-actions">
+        <button class="button button-primary" type="submit">Добавить</button>
+        <button class="button button-ghost" type="button" data-close-collection-dialog>Отмена</button>
+      </div>
+    </form>
+  </dialog>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    const collectionDialog = document.querySelector("#collection-dialog");
+    document.querySelector("[data-open-collection-dialog]")?.addEventListener("click", () => {
+      collectionDialog.showModal();
+    });
+    document.querySelector("[data-close-collection-dialog]")?.addEventListener("click", () => {
+      collectionDialog.close();
+    });
+  </script>
+{% endblock %}

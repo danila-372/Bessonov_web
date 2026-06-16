@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Вход · Электронная библиотека{% endblock %}
+
+{% block content %}
+  <section class="narrow-panel">
+    <p class="eyebrow">Аутентификация</p>
+    <h1>Вход в систему</h1>
+    <form method="post" class="stacked-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>
+        Логин
+        <input name="login" type="text" autocomplete="username" required autofocus value="{{ request.form.get('login', '') }}">
+      </label>
+      <label>
+        Пароль
+        <input name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <label class="checkbox-label">
+        <input name="remember" type="checkbox" {% if request.form.get('remember') %}checked{% endif %}>
+        Запомнить меня
+      </label>
+      <button class="button button-primary" type="submit">Войти</button>
+    </form>
+  </section>
+{% endblock %}

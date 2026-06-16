@@ -1,0 +1,50 @@
+{% macro render_book_form(book, genres, selected_genre_ids, mode) %}
+  <form method="post" enctype="multipart/form-data" class="stacked-form wide-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>
+      Название
+      <input name="title" type="text" required value="{{ request.form.get('title', book.title if book else '') }}">
+    </label>
+    <label>
+      Краткое описание
+      <textarea class="markdown-editor" name="description" rows="10" required>{{ request.form.get('description', book.description if book else '') }}</textarea>
+    </label>
+    <div class="form-grid">
+      <label>
+        Год издания
+        <input name="year" type="number" min="1" max="9999" required value="{{ request.form.get('year', book.year if book else '') }}">
+      </label>
+      <label>
+        Объём в страницах
+        <input name="pages" type="number" min="1" required value="{{ request.form.get('pages', book.pages if book else '') }}">
+      </label>
+    </div>
+    <label>
+      Издательство
+      <input name="publisher" type="text" required value="{{ request.form.get('publisher', book.publisher if book else '') }}">
+    </label>
+    <label>
+      Автор
+      <input name="author" type="text" required value="{{ request.form.get('author', book.author if book else '') }}">
+    </label>
+    <label>
+      Жанры
+      <select name="genres" multiple required size="6">
+        {% for genre in genres %}
+          <option value="{{ genre.id }}" {% if genre.id|string in selected_genre_ids %}selected{% endif %}>{{ genre.name }}</option>
+        {% endfor %}
+      </select>
+      <span class="field-help">Для выбора нескольких жанров удерживайте Ctrl.</span>
+    </label>
+    {% if mode == "create" %}
+      <label>
+        Обложка
+        <input name="cover" type="file" accept="image/*" required>
+      </label>
+    {% endif %}
+    <div class="form-actions">
+      <button class="button button-primary" type="submit">Сохранить</button>
+      <a class="button button-ghost" href="{{ url_for('book_detail', book_id=book.id) if book and book.id else url_for('index') }}">Отмена</a>
+    </div>
+  </form>
+{% endmacro %}

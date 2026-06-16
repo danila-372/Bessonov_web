@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Каталог · Электронная библиотека{% endblock %}
+
+{% block content %}
+  <section class="page-heading split-heading">
+    <div>
+      <p class="eyebrow">Каталог</p>
+      <h1>Книги библиотеки</h1>
+      <p class="subtle">Поиск по названию, автору, издательству и жанру.</p>
+    </div>
+    {% if current_user and current_user.role.name == ROLE_ADMIN %}
+      <a class="button button-primary" href="{{ url_for('create_book') }}">Добавить книгу</a>
+    {% endif %}
+  </section>
+
+  <form class="search-form" action="{{ url_for('index') }}" method="get">
+    <label class="sr-only" for="q">Поиск книг</label>
+    <input id="q" name="q" type="search" value="{{ search }}" placeholder="Например, автор или название">
+    <button class="button button-primary" type="submit">Найти</button>
+    {% if search %}
+      <a class="button button-ghost" href="{{ url_for('index') }}">Сбросить</a>
+    {% endif %}
+  </form>
+
+  {% if books.items %}
+    <section class="book-grid" aria-label="Список книг">
+      {% for book in books.items %}
+        <article class="book-card">
+          <a class="cover-link" href="{{ url_for('book_detail', book_id=book.id) }}">
+            {% if book.cover %}
+              <img class="book-cover" src="{{ url_for('uploaded_file', filename=book.cover.filename) }}" alt="Обложка книги «{{ book.title }}»">
+            {% endif %}
+          </a>
+          <div class="book-card-body">
+            <p class="book-year">{{ book.year }}</p>
+            <h2><a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a></h2>
+            <p class="subtle">{{ book.author }}</p>
+            <p class="genre-list">
+              {% for genre in book.genres %}
+                <span class="tag">{{ genre.name }}</span>
+              {% endfor %}
+            </p>
+            <div class="book-stats">
+              <span>Оценка: {{ "%.1f"|format(book.average_rating) if book.average_rating is not none else "нет" }}</span>
+              <span>Рецензий: {{ book.reviews|length }}</span>
+            </div>
+          </div>
+          <div class="card-actions">
+            <a class="button button-small button-ghost" href="{{ url_for('book_detail', book_id=book.id) }}">Просмотр</a>
+            {% if current_user and current_user.role.name in BOOK_EDITOR_ROLES %}
+              <a class="button button-small button-ghost" href="{{ url_for('edit_book', book_id=book.id) }}">Редактировать</a>
+            {% endif %}
+            {% if current_user and current_user.role.name == ROLE_ADMIN %}
+              <button
+                class="button button-small button-danger"
+                type="button"
+                data-open-delete
+                data-delete-url="{{ url_for('delete_book', book_id=book.id) }}"
+                data-book-title="{{ book.title }}"
+              >Удалить</button>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </section>
+  {% else %}
+    <section class="empty-state">
+      <h2>Книги не найдены</h2>
+      <p>Попробуйте изменить запрос или добавьте первую книгу в каталог.</p>
+    </section>
+  {% endif %}
+
+  {% if books.pages > 1 %}
+    <nav class="pagination" aria-label="Пагинация">
+      {% if books.has_prev %}
+        <a class="button button-ghost" href="{{ url_for('index', page=books.prev_num, q=search) }}">Назад</a>
+      {% endif %}
+      {% for page_number in books.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if page_number %}
+          {% if page_number == books.page %}
+            <span class="page-current">{{ page_number }}</span>
+          {% else %}
+            <a href="{{ url_for('index', page=page_number, q=search) }}">{{ page_number }}</a>
+          {% endif %}
+        {% else %}
+          <span>…</span>
+        {% endif %}
+      {% endfor %}
+      {% if books.has_next %}
+        <a class="button button-ghost" href="{{ url_for('index', page=books.next_num, q=search) }}">Вперёд</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+
+  {% if current_user and current_user.role.name == ROLE_ADMIN %}
+    <dialog class="delete-dialog" id="delete-dialog">
+      <h2>Удаление книги</h2>
+      <p id="delete-dialog-message"></p>
+      <div class="dialog-actions">
+        <form id="delete-form" action="" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="button button-danger" type="submit">Да</button>
+        </form>
+        <button class="button button-ghost" type="button" data-close-delete>Нет</button>
+      </div>
+    </dialog>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {% if current_user and current_user.role.name == ROLE_ADMIN %}
+    <script>
+      const deleteDialog = document.querySelector("#delete-dialog");
+      const deleteForm = document.querySelector("#delete-form");
+      const deleteMessage = document.querySelector("#delete-dialog-message");
+
+      document.querySelectorAll("[data-open-delete]").forEach((button) => {
+        button.addEventListener("click", () => {
+          deleteForm.action = button.dataset.deleteUrl;
+          deleteMessage.textContent = `Вы уверены, что хотите удалить книгу ${button.dataset.bookTitle}?`;
+          deleteDialog.showModal();
+        });
+      });
+
+      document.querySelector("[data-close-delete]")?.addEventListener("click", () => {
+        deleteDialog.close();
+      });
+    </script>
+  {% endif %}
+{% endblock %}

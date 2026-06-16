@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Новая рецензия · {{ book.title }}{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+{% endblock %}
+
+{% block content %}
+  <section class="page-heading">
+    <p class="eyebrow">Рецензия</p>
+    <h1>{{ book.title }}</h1>
+  </section>
+  <form method="post" class="stacked-form wide-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>
+      Оценка
+      <select name="rating" required>
+        <option value="5" {% if rating == "5" %}selected{% endif %}>отлично</option>
+        <option value="4" {% if rating == "4" %}selected{% endif %}>хорошо</option>
+        <option value="3" {% if rating == "3" %}selected{% endif %}>удовлетворительно</option>
+        <option value="2" {% if rating == "2" %}selected{% endif %}>неудовлетворительно</option>
+        <option value="1" {% if rating == "1" %}selected{% endif %}>плохо</option>
+        <option value="0" {% if rating == "0" %}selected{% endif %}>ужасно</option>
+      </select>
+    </label>
+    <label>
+      Текст рецензии
+      <textarea class="markdown-editor" name="text" rows="10" required>{{ text }}</textarea>
+    </label>
+    <div class="form-actions">
+      <button class="button button-primary" type="submit">Сохранить</button>
+      <a class="button button-ghost" href="{{ url_for('book_detail', book_id=book.id) }}">Отмена</a>
+    </div>
+  </form>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+  <script>
+    if (window.EasyMDE) {
+      new EasyMDE({ element: document.querySelector(".markdown-editor"), spellChecker: false });
+    }
+  </script>
+{% endblock %}

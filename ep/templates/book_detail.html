@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} · Электронная библиотека{% endblock %}
+
+{% block content %}
+  <article class="detail-layout">
+    <div>
+      {% if book.cover %}
+        <img class="detail-cover" src="{{ url_for('uploaded_file', filename=book.cover.filename) }}" alt="Обложка книги «{{ book.title }}»">
+      {% endif %}
+    </div>
+    <div>
+      <p class="eyebrow">{{ book.year }}</p>
+      <h1>{{ book.title }}</h1>
+      <p class="detail-author">{{ book.author }}</p>
+      <p class="genre-list">
+        {% for genre in book.genres %}
+          <span class="tag">{{ genre.name }}</span>
+        {% endfor %}
+      </p>
+      <dl class="book-meta">
+        <dt>Издательство</dt>
+        <dd>{{ book.publisher }}</dd>
+        <dt>Объём</dt>
+        <dd>{{ book.pages }} стр.</dd>
+        <dt>Средняя оценка</dt>
+        <dd>{{ "%.1f"|format(book.average_rating) if book.average_rating is not none else "Пока нет оценок" }}</dd>
+      </dl>
+      {% if current_user and current_user.role.name == ROLE_USER %}
+        <div class="detail-actions">
+          <button class="button button-primary" type="button" data-open-add-collection>Добавить в подборку</button>
+        </div>
+      {% endif %}
+      {% if current_user and current_user.role.name in BOOK_EDITOR_ROLES %}
+        <a class="button button-ghost" href="{{ url_for('edit_book', book_id=book.id) }}">Редактировать</a>
+      {% endif %}
+    </div>
+  </article>
+
+  <section class="content-section">
+    <h2>Описание</h2>
+    <div class="markdown-body">{{ book.description|markdown }}</div>
+  </section>
+
+  <section class="content-section">
+    <div class="split-heading">
+      <div>
+        <p class="eyebrow">Отзывы читателей</p>
+        <h2>Рецензии <span class="count">{{ book.reviews|length }}</span></h2>
+      </div>
+      {% if current_user and not own_review %}
+        <a class="button button-primary" href="{{ url_for('create_review', book_id=book.id) }}">Написать рецензию</a>
+      {% endif %}
+    </div>
+    {% if current_user and own_review %}
+      <p class="notice">Ваша рецензия уже опубликована ниже.</p>
+    {% elif not current_user %}
+      <p class="notice">Войдите в систему, чтобы написать рецензию.</p>
+    {% endif %}
+
+    {% if book.reviews %}
+      <div class="review-list">
+        {% for review in book.reviews %}
+          <article class="review-card {% if own_review and review.id == own_review.id %}own-review{% endif %}">
+            <div class="review-heading">
+              <div>
+                <h3>{{ review.user.full_name }}</h3>
+                <p class="subtle">{{ review.created_at.strftime("%d.%m.%Y %H:%M") }}</p>
+              </div>
+              <strong class="rating">{{ review.rating }}/5</strong>
+            </div>
+            <div class="markdown-body">{{ review.text|markdown }}</div>
+            {% if current_user and current_user.role.name in [ROLE_ADMIN, ROLE_MODERATOR] %}
+              <form action="{{ url_for('delete_review', review_id=review.id) }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="button button-small button-danger" type="submit">Удалить рецензию</button>
+              </form>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state compact">
+        <p>У этой книги ещё нет рецензий.</p>
+      </div>
+    {% endif %}
+  </section>
+
+  {% if current_user and current_user.role.name == ROLE_USER %}
+    <dialog class="delete-dialog" id="add-collection-dialog">
+      <h2>Добавить в подборку</h2>
+      <form action="{{ url_for('add_book_to_collection', book_id=book.id) }}" method="post" class="stacked-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>
+          Подборка
+          <select name="collection_id" required {% if not user_collections %}disabled{% endif %}>
+            {% for collection in user_collections %}
+              <option value="{{ collection.id }}">{{ collection.title }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        {% if not user_collections %}
+          <p class="notice">Сначала создайте подборку в разделе «Мои подборки».</p>
+        {% endif %}
+        <div class="dialog-actions">
+          <button class="button button-primary" type="submit" {% if not user_collections %}disabled{% endif %}>Добавить</button>
+          <button class="button button-ghost" type="button" data-close-add-collection>Отмена</button>
+        </div>
+      </form>
+    </dialog>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {% if current_user and current_user.role.name == ROLE_USER %}
+    <script>
+      const addCollectionDialog = document.querySelector("#add-collection-dialog");
+      document.querySelector("[data-open-add-collection]")?.addEventListener("click", () => {
+        addCollectionDialog.showModal();
+      });
+      document.querySelector("[data-close-add-collection]")?.addEventListener("click", () => {
+        addCollectionDialog.close();
+      });
+    </script>
+  {% endif %}
+{% endblock %}
